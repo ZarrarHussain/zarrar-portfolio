@@ -1,4 +1,4 @@
-import { type Project } from "@shared/schema";
+import { type Project } from "@/types/portfolio";
 import { ExternalLink, Terminal, X, Code, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

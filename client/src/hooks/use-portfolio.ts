@@ -1,15 +1,32 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { api, type InsertContactMessage } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
+
+interface InsertContactMessage {
+  name: string;
+  email: string;
+  message: string;
+}
 
 // Fetch Projects
 export function useProjects() {
   return useQuery({
-    queryKey: [api.projects.list.path],
+    queryKey: ["/data/projects.json"],
     queryFn: async () => {
-      const res = await fetch(api.projects.list.path);
+      const res = await fetch("/data/projects.json");
       if (!res.ok) throw new Error("Failed to fetch projects");
-      return api.projects.list.responses[200].parse(await res.json());
+      const data = await res.json();
+      // Transform snake_case from JSON to camelCase
+      return data.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        details: p.details || [],
+        tags: p.tags,
+        imageUrl: p.image_url || p.imageUrl,
+        link: p.link,
+        featured: p.featured,
+        createdAt: p.created_at ? new Date(p.created_at) : new Date(),
+      }));
     },
   });
 }
@@ -17,11 +34,11 @@ export function useProjects() {
 // Fetch Skills
 export function useSkills() {
   return useQuery({
-    queryKey: [api.skills.list.path],
+    queryKey: ["/data/skills.json"],
     queryFn: async () => {
-      const res = await fetch(api.skills.list.path);
+      const res = await fetch("/data/skills.json");
       if (!res.ok) throw new Error("Failed to fetch skills");
-      return api.skills.list.responses[200].parse(await res.json());
+      return res.json();
     },
   });
 }
@@ -29,11 +46,12 @@ export function useSkills() {
 // Fetch Experiences
 export function useExperiences() {
   return useQuery({
-    queryKey: [api.experiences.list.path],
+    queryKey: ["/data/experiences.json"],
     queryFn: async () => {
-      const res = await fetch(api.experiences.list.path);
+      const res = await fetch("/data/experiences.json");
       if (!res.ok) throw new Error("Failed to fetch experiences");
-      return api.experiences.list.responses[200].parse(await res.json());
+      const data = await res.json();
+      return data.sort((a: any, b: any) => a.order - b.order);
     },
   });
 }
@@ -44,21 +62,11 @@ export function useContactMutation() {
   
   return useMutation({
     mutationFn: async (data: InsertContactMessage) => {
-      const validated = api.contact.create.input.parse(data);
-      const res = await fetch(api.contact.create.path, {
-        method: api.contact.create.method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validated),
-      });
-      
-      if (!res.ok) {
-        if (res.status === 400) {
-          const error = api.contact.create.responses[400].parse(await res.json());
-          throw new Error(error.message);
-        }
-        throw new Error("Failed to send message");
-      }
-      return api.contact.create.responses[201].parse(await res.json());
+      // On static hosting, we can't process contact form server-side
+      // For now, just simulate success. You can integrate a third-party 
+      // form service like Netlify Forms, Formspree, or EmailJS later.
+      console.log("Contact form submitted:", data);
+      return { id: 1, ...data, createdAt: new Date() };
     },
     onSuccess: () => {
       toast({

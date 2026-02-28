@@ -6,12 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Mail, Terminal, Brain, Server, Loader2, Code, Database, Cpu, X, CheckCircle2, Shield, Cloud } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactMessageSchema } from "@shared/routes";
+import { insertContactMessageSchema, type Experience } from "@/types/portfolio";
 import { z } from "zod";
 import { MatrixBackground } from "@/components/MatrixBackground";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { type Experience } from "@shared/schema";
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects();
