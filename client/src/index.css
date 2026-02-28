@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 140 15% 4%;
+    --foreground: 140 100% 50%;
+    --card: 140 15% 7%;
+    --card-foreground: 140 100% 70%;
+    --popover: 140 15% 4%;
+    --popover-foreground: 140 100% 50%;
+    --primary: 140 100% 50%;
+    --primary-foreground: 140 15% 4%;
+    --secondary: 140 15% 12%;
+    --secondary-foreground: 140 100% 50%;
+    --muted: 140 15% 10%;
+    --muted-foreground: 140 50% 60%;
+    --accent: 140 100% 50%;
+    --accent-foreground: 140 15% 4%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 140 100% 15%;
+    --input: 140 100% 15%;
+    --ring: 140 100% 50%;
+    --radius: 0.5rem;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "JetBrains Mono", "Courier New", monospace;
+    @apply antialiased relative min-h-screen overflow-x-hidden;
+  }
+
+  /* Glitch Animation */
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.2s infinite;
+  }
+
+  /* Matrix Rain Effect */
+  #matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  /* CRT Overlay */
+  body::before {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%, 
+      rgba(0, 0, 0, 0.1) 50%
+    ), linear-gradient(
+      90deg, 
+      rgba(255, 0, 0, 0.03), 
+      rgba(0, 255, 0, 0.01), 
+      rgba(0, 0, 255, 0.03)
+    );
+    background-size: 100% 3px, 3px 100%;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* Scanline */
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 255, 0, 0.03) 50%,
+      transparent 100%
+    );
+    opacity: 0.1;
+    z-index: 101;
+    pointer-events: none;
+    animation: scanline 8s linear infinite;
+  }
+}
+
+@layer components {
+  .hacker-card {
+    @apply bg-card border border-primary/20 hover:border-primary/50 transition-all duration-500 rounded-none relative overflow-hidden;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.05);
+  }
+
+  .hacker-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.03), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+    pointer-events: none;
+  }
+
+  .hacker-card:hover::before {
+    left: 100%;
+  }
+
+  .hacker-card:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+    transform: translateY(-5px) scale(1.01);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.6), 0 0 12px rgba(0, 255, 0, 0.3);
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4), inset 0 0 10px rgba(0, 255, 0, 0.2);
+  }
+
+  .terminal-text::before {
+    content: "> ";
+    @apply text-primary animate-pulse;
+  }
+}
+
+.crt-screen {
+  position: relative;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/30 hover:bg-primary/50 transition-colors;
+}
